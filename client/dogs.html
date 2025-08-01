@@ -181,7 +181,7 @@
 
     async function loadDogs() {
       try {
-        const response = await fetch('http://localhost:3000/api/dogs', {
+        const response = await fetch('https://dog-adoption-website.onrender.com/api/dogs', {
           headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
         });
 
