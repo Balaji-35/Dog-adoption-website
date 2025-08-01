@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dog Adoption - Login/Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: url('https://images.unsplash.com/photo-1560807707-8cc77767d783?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.75), rgba(208, 236, 255, 0.85));
+      z-index: 0;
+    }
+
+    .form-container {
+      background: #ffffff;
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      width: 100%;
+      max-width: 400px;
+      transition: all 0.4s ease-in-out;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #2c3e50;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #3498db;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .toggle-link {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 14px;
+    }
+
+    .toggle-link a {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .toggle-link a:hover {
+      text-decoration: underline;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .message {
+      margin-top: 10px;
+      font-size: 14px;
+      color: red;
+      text-align: center;
+      min-height: 18px;
+    }
+
+    @media (max-width: 480px) {
+      .form-container {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Form -->
+  <div class="form-container" id="login-form">
+    <h1>Login</h1>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <div class="toggle-link">Don't have an account? <a href="#" onclick="toggleForms()">Register</a></div>
+    <div class="message" id="login-msg"></div>
+  </div>
+
+  <!-- Register Form (Hidden by default) -->
+  <div class="form-container hidden" id="register-form">
+    <h1>Register</h1>
+    <input type="text" id="new-username" placeholder="Username" />
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="new-password" placeholder="Password" />
+    <button onclick="register()">Register</button>
+    <div class="toggle-link">Already have an account? <a href="#" onclick="toggleForms()">Login</a></div>
+    <div class="message" id="register-msg"></div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+
+    function toggleForms() {
+      loginForm.classList.toggle('hidden');
+      registerForm.classList.toggle('hidden');
+      clearMessages();
+    }
+
+    function clearMessages() {
+      document.getElementById('login-msg').textContent = '';
+      document.getElementById('register-msg').textContent = '';
+    }
+
+    async function login() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const msg = document.getElementById('login-msg');
+
+      if (!username || !password) {
+        msg.textContent = "Please fill in all fields.";
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:3000/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+        if (data.success) {
+          localStorage.setItem('token', data.token);
+          window.location.href = 'home.html';
+        } else {
+          msg.textContent = 'Login failed: ' + (data.message || 'Invalid credentials');
+        }
+      } catch (err) {
+        msg.textContent = 'Login error. Please try again.';
+        console.error(err);
+      }
+    }
+
+    async function register() {
+      const username = document.getElementById('new-username').value.trim();
+      const password = document.getElementById('new-password').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const msg = document.getElementById('register-msg');
+
+      if (!username || !password || !email) {
+        msg.textContent = "Please fill in all fields.";
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:3000/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, email })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          msg.style.color = 'green';
+          msg.textContent = 'Registration successful! Please login.';
+          setTimeout(() => toggleForms(), 1500);
+        } else {
+          msg.textContent = 'Registration failed: ' + (data.message || 'Unknown error');
+        }
+      } catch (err) {
+        msg.textContent = 'Registration error. Please try again.';
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>

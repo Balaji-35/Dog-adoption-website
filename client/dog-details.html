@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dog Adoption - Dog Details</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+            margin: 0;
+            color: #333;
+        }
+        header {
+            background-color: #3498db;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        header nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        header nav a:hover {
+            color: #dfeeff;
+        }
+        main {
+            max-width: 1200px;
+            margin: 30px auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .dog-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: space-between;
+        }
+        .dog-details img {
+            max-width: 350px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .dog-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        .dog-info h2 {
+            font-size: 28px;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        .dog-info p {
+            font-size: 16px;
+            margin: 8px 0;
+        }
+        .dog-info p strong {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .dog-info button {
+            padding: 12px 20px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .dog-info button:hover {
+            background-color: #2ecc71;
+        }
+        #adoption-form, #confirmation {
+            text-align: center;
+            margin-top: 30px;
+        }
+        #adoption-form input,#adoption-form textarea {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        #adoption-form button {
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        #adoption-form button:hover {
+            background-color: #2980b9;
+        }
+        #confirmation {
+            background-color: #f1f8e9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        #confirmation h2 {
+            color: #27ae60;
+        }
+        #confirmation p {
+            font-size: 18px;
+        }
+        #confirmation button {
+            background-color: #3498db;
+            padding: 10px 15px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        #confirmation button:hover {
+            background-color: #2980b9;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #3498db;
+            color: white;
+            margin-top: 40px;
+        }
+        footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer a:hover {
+            color: #f0f0f0;
+        }
+        @media (max-width: 768px) {
+            main {
+                padding: 20px;
+            }
+            .dog-details {
+                flex-direction: column;
+                align-items: center;
+            }
+            .dog-info button {
+                width: 100%;
+                max-width: 400px;
+            }
+            #adoption-form input,#adoption-form textarea {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="home.html">Home</a>
+            <a href="dogs.html">Browse Dogs</a>
+            <a href="#" id="logout-link">Logout</a>
+        </nav>
+    </header>
+    <main>
+        <section id="dog-details" class="dog-details">
+            <p>Loading dog details...</p>
+        </section>
+        <section id="adoption-form" style="display:none;">
+            <h2>Adoption Form</h2>
+            <form id="adoptionForm">
+                <input type="text" id="full-name" placeholder="Full Name" required><br>
+                <input type="email" id="customer-email" placeholder="Email" required><br>
+                <input type="tel" id="phone" placeholder="Phone Number" required><br>
+                <textarea id="address" placeholder="Address" required></textarea><br>
+                <button type="button" id="submit-btn" onclick="submitAdoption()">Submit Adoption Request</button>
+            </form>
+        </section>
+        <div id="confirmation" style="display:none;">
+            <h2>Adoption Confirmation</h2>
+            <p id="confirmation-message"></p>
+            <button onclick="completePurchase()">Complete Purchase</button>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Happy Paws Adoption | <a href="contact.html">Contact Us</a></p>
+    </footer>
+    <script>
+        const token = localStorage.getItem('token');
+        const urlParams = new URLSearchParams(window.location.search);
+        const dogId = urlParams.get('id');
+        if (!token) {
+            alert("You must be logged in.");
+            window.location.href = 'login.html';
+        }
+        if (!dogId) {
+            alert('Invalid dog ID');
+            window.location.href = 'dogs.html';
+        }
+        async function loadDogDetails() {
+            try {
+                const response = await fetch(`http://localhost:3000/api/dogs/${dogId}`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        alert('Unauthorized. Please log in again.');
+                        localStorage.removeItem('token');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    throw new Error('Failed to fetch dog details.');
+                }
+                const dog = await response.json();
+                const dogDetails = document.getElementById('dog-details');
+                dogDetails.innerHTML = `
+                    <div class="dog-info">
+                        <img src="${dog.imageUrl || 'https://via.placeholder.com/350'}" alt="${dog.name}">
+                        <h2>${dog.name}</h2>
+                        <p><strong>Breed:</strong> ${dog.breed || 'N/A'}</p>
+                        <p><strong>Age:</strong> ${dog.age} years</p>
+                        <p><strong>Gender:</strong> ${dog.gender}</p>
+                        <p><strong>Price:</strong> $${dog.price}</p>
+                        <p><strong>Available:</strong> ${dog.availableCount}</p>
+                        <p><strong>Description:</strong> ${dog.description || 'No description provided.'}</p>
+                        <h3>Care Instructions</h3>
+                        <p><strong>Food:</strong> ${dog.careInstructions?.food || 'N/A'}</p>
+                        <p><strong>Exercise:</strong> ${dog.careInstructions?.exercise || 'N/A'}</p>
+                        <p><strong>Grooming:</strong> ${dog.careInstructions?.grooming || 'N/A'}</p>
+                        <p><strong>Special Needs:</strong> ${dog.careInstructions?.specialNeeds || 'None'}</p>
+                        <button onclick="showAdoptionForm()">Adopt ${dog.name}</button>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading dog details:', error);
+                document.getElementById('dog-details').innerHTML = '<p>Failed to load dog details.</p>';
+            }
+        }
+        function showAdoptionForm() {
+            document.getElementById('adoption-form').style.display = 'block';
+        }
+        async function submitAdoption() {
+            const formData = {
+                fullName: document.getElementById('full-name').value,
+                email: document.getElementById('customer-email').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                dogId
+            };
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            try {
+                const response = await fetch('http://localhost:3000/api/adoptions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(formData)
+                });
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('adoption-form').style.display = 'none';
+                    document.getElementById('confirmation').style.display = 'block';
+                    document.getElementById('confirmation-message').textContent =
+                        `Your adoption request for ${data.dogName} has been received. Total price: $${data.price}.`;
+                } else {
+                    alert('Adoption request failed: ' + data.message);
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error submitting adoption:', error);
+                alert('Adoption request failed');
+                submitBtn.disabled = false;
+            }
+        }
+        async function completePurchase() {
+            try {
+                const response = await fetch(`http://localhost:3000/api/adoptions/${dogId}/complete`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert('Purchase completed successfully! Thank you for adopting!');
+                    window.location.href = 'home.html';
+                } else {
+                    alert('Purchase failed: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error completing purchase:', error);
+                alert('Purchase failed');
+            }
+        }
+        function logout(event) {
+            event.preventDefault();
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        }
+        document.getElementById('logout-link').addEventListener('click', logout);
+
+        window.onload = loadDogDetails;
+    </script>
+</body>
+</html>

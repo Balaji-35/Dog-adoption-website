@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dog Adoption - Browse Dogs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: #f1f5f9;
+      color: #333;
+    }
+
+    header {
+      background: linear-gradient(to right, #3498db, #2ecc71);
+      padding: 25px 0;
+      text-align: center;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-size: 30px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    nav {
+      margin-top: 10px;
+    }
+
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      font-size: 16px;
+      transition: opacity 0.3s;
+    }
+
+    nav a:hover {
+      opacity: 0.85;
+    }
+
+    main {
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    #dog-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    .dog-card {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .dog-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .dog-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      border: 2px solid #ecf0f1;
+    }
+
+    .dog-card h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+      color: #2c3e50;
+    }
+
+    .dog-card p {
+      color: #7f8c8d;
+      font-size: 14px;
+      margin: 4px 0;
+    }
+
+    .dog-card .price {
+      font-size: 16px;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #e67e22;
+    }
+
+    .dog-card button {
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+
+    .dog-card button:hover {
+      background-color: #2ecc71;
+    }
+
+    footer {
+      background-color: #3498db;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 60px;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    footer a {
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+    }
+
+    footer a:hover {
+      color: #ecf0f1;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 24px;
+      }
+      nav a {
+        display: block;
+        margin: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🐾 Available Dogs for Adoption</h1>
+    <nav>
+      <a href="home.html">Home</a>
+      <a href="dogs.html">Browse Dogs</a>
+      <a href="#" id="logout-link">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="dog-list">
+      <!-- Dogs will be dynamically inserted here -->
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Happy Paws Adoption | <a href="contact.html">Contact Us</a></p>
+  </footer>
+
+  <script>
+    if (!localStorage.getItem('token')) {
+      window.location.href = 'login.html';
+    }
+
+    async function loadDogs() {
+      try {
+        const response = await fetch('http://localhost:3000/api/dogs', {
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+        });
+
+        if (!response.ok) throw new Error(`Failed to fetch dogs: ${response.status}`);
+
+        const dogs = await response.json();
+        const dogList = document.getElementById('dog-list');
+
+        if (!dogs.length) {
+          dogList.innerHTML = '<p>No dogs available for adoption at the moment.</p>';
+          return;
+        }
+
+        dogs.forEach(dog => {
+          const dogCard = document.createElement('div');
+          dogCard.className = 'dog-card';
+          dogCard.innerHTML = `
+            <img src="${dog.imageUrl || 'https://via.placeholder.com/250x180'}" alt="${dog.name || 'Dog'}">
+            <h3>${dog.name || 'Unnamed'}</h3>
+            <p>${dog.breed || 'Unknown breed'}</p>
+            <p>${dog.age ?? 'N/A'} years old</p>
+            <p>Available: ${dog.availableCount ?? 0}</p>
+            <p class="price">Rs.${dog.price}</p>
+            <button onclick="viewDogDetails('${dog._id}')">View Details</button>
+          `;
+          dogList.appendChild(dogCard);
+        });
+      } catch (error) {
+        console.error('Error loading dogs:', error);
+        document.getElementById('dog-list').innerHTML = '<p>Unable to load dog list. Please try again later.</p>';
+      }
+    }
+
+    function viewDogDetails(dogId) {
+      if (dogId) {
+        window.location.href = `dog-details.html?id=${dogId}`;
+      }
+    }
+
+    function logout(event) {
+      event.preventDefault();
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    }
+
+    document.getElementById('logout-link').addEventListener('click', logout);
+    window.onload = loadDogs;
+  </script>
+</body>
+</html>

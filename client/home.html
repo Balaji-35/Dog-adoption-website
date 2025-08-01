@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dog Adoption - Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #e0f7fa, #f9f9f9);
+      color: #333;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(to right, #3498db, #2ecc71);
+      padding: 25px 0;
+      text-align: center;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    nav {
+      margin-top: 10px;
+    }
+
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      font-size: 16px;
+      transition: opacity 0.3s;
+    }
+
+    nav a:hover {
+      opacity: 0.85;
+    }
+
+    main {
+      padding: 50px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    section {
+      background-color: white;
+      padding: 35px 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      margin-bottom: 40px;
+      transition: transform 0.3s ease;
+    }
+
+    section:hover {
+      transform: translateY(-3px);
+    }
+
+    h2 {
+      font-size: 26px;
+      margin-bottom: 25px;
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    /* Statistics Section */
+    #stats .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .stat-card {
+      background: #eafaf1;
+      border-left: 6px solid #2ecc71;
+      border-radius: 12px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: 0.2s ease-in-out;
+    }
+
+    .stat-card:hover {
+      background: #e0f7ff;
+      transform: scale(1.03);
+    }
+
+    .stat-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #34495e;
+    }
+
+    .stat-number {
+      font-size: 36px;
+      font-weight: bold;
+      color: #27ae60;
+    }
+
+    /* About Us Section */
+    #about {
+      background: #ffffff;
+      border-left: 5px solid #3498db;
+    }
+
+    #about h3 {
+      font-size: 20px;
+      margin: 20px 0 10px;
+      color: #2980b9;
+    }
+
+    #about p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    #about strong {
+      color: #2c3e50;
+    }
+
+    #about a {
+      color: #3498db;
+      text-decoration: underline;
+    }
+
+    #about a:hover {
+      color: #2c3e50;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 24px;
+      }
+
+      nav a {
+        display: block;
+        margin: 10px 0;
+      }
+
+      main {
+        padding: 20px 15px;
+      }
+
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🐾 Welcome to Happy Paws Adoption</h1>
+    <nav>
+      <a href="home.html">Home</a>
+      <a href="dogs.html">Browse Dogs</a>
+      <a href="#" id="logout-link">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Statistics Section -->
+    <section id="stats">
+      <h2>📊 Our Statistics</h2>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-title">Dogs Available</div>
+          <div class="stat-number" id="dogs-available">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Happy Customers</div>
+          <div class="stat-number" id="customers-count">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Dogs Adopted</div>
+          <div class="stat-number" id="dogs-adopted">0</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about">
+      <h2>🐶 About Us</h2>
+      <p><strong>Happy Paws Adoption</strong> is a caring, non-profit organization dedicated to rescuing, rehabilitating, and rehoming abandoned dogs. Our passion is to create a world where every dog has a loving, safe forever home.</p>
+
+      <h3>Our Mission</h3>
+      <p>We rescue dogs in need and pair them with compassionate families. In collaboration with local shelters, vets, and volunteers, we provide each pup with top-notch medical care and emotional support.</p>
+
+      <h3>Contact Us</h3>
+      <p><strong>Email:</strong> <a href="mailto:contact@happypaws.org">contact@happypaws.org</a></p>
+      <p><strong>Phone:</strong> +1 234 567 890</p>
+      <p><strong>Address:</strong> 123 Paws Avenue, White Town, Puducherry</p>
+
+      <h3>Join Us Today!</h3>
+      <p>Adoption changes lives. If you're ready to make a difference, <a href="dogs.html">browse our available dogs</a> and find your best friend today!</p>
+    </section>
+  </main>
+
+  <script>
+    if (!localStorage.getItem('token')) {
+      window.location.href = 'login.html';
+    }
+
+    async function loadStats() {
+      try {
+        const response = await fetch('http://localhost:3000/api/stats', {
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+        });
+
+        if (!response.ok) throw new Error(`Status: ${response.status}`);
+
+        const data = await response.json();
+        document.getElementById('dogs-available').textContent = data.dogsAvailable ?? '0';
+        document.getElementById('customers-count').textContent = data.customersCount ?? '0';
+        document.getElementById('dogs-adopted').textContent = data.dogsAdopted ?? '0';
+      } catch (error) {
+        console.error('Error loading stats:', error);
+        alert('Unable to load statistics at this time.');
+      }
+    }
+
+    function logout(event) {
+      event.preventDefault();
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    }
+
+    document.getElementById('logout-link').addEventListener('click', logout);
+    window.onload = loadStats;
+  </script>
+</body>
+</html>
